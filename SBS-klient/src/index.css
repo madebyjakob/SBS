@@ -1,1 +1,14 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+@theme{
+    --color-tabyBlue-50: #e6f3f8;
+    --color-tabyBlue-100: #cce7f1;
+    --color-tabyBlue-200: #99cfe3;
+    --color-tabyBlue-300: #66b7d5;
+    --color-tabyBlue-400: #339fc7;
+    --color-tabyBlue-500: #006590;
+    --color-tabyBlue-600: #005173;
+    --color-tabyBlue-700: #003d56;
+    --color-tabyBlue-800: #002939;
+    --color-tabyBlue-900: #00141c;
+}

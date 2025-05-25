@@ -4,30 +4,41 @@ import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   const { isAuthenticated, logout, user } = useAuth0();
-  
+
   // Check if user is admin - in a real app, this would be verified with backend
   // or using Auth0 roles/permissions
   const isAdmin = user && user.email;
 
   return (
-    <nav className="bg-blue-600 text-white py-4 px-6 flex justify-between items-center">
-      <div className="text-2xl font-bold">SB-system</div>
-      <div className="flex space-x-4">
-        <Link to="/Hem" className="hover:underline">Hem</Link>
-        <Link to="/Böcker" className="hover:underline">Böcker</Link>
-        <Link to="/mypages" className="hover:underline">Mina sidor</Link>
-        {isAdmin && (
-          <Link to="/Admin" className="hover:underline">Admin</Link>
-        )}
+    <nav className="bg-white shadow-md">
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-2xl font-bold text-tabyBlue-500">
+            SB-system
+          </Link>
+          <div className="flex space-x-6">
+            <Link to="/books" className="text-tabyBlue-600 hover:text-tabyBlue-800 transition-colors">
+              Böcker
+            </Link>
+            <Link to="/mypages" className="text-tabyBlue-600 hover:text-tabyBlue-800 transition-colors">
+              Mina sidor
+            </Link>
+            {isAdmin && (
+              <Link to="/admin" className="text-tabyBlue-600 hover:text-tabyBlue-800 transition-colors">
+                Admin
+              </Link>
+            )}
+          </div>
+          {isAuthenticated && (
+            <button
+              className="px-4 py-2 bg-white text-tabyBlue-600 rounded hover:bg-gray-200 transition"
+              onClick={() => logout({ returnTo: window.location.origin })}
+            >
+              Logga ut
+            </button>
+          )}
+        </div>
       </div>
-      {isAuthenticated && (
-        <button
-          className="px-4 py-2 bg-white text-blue-600 rounded hover:bg-gray-200 transition"
-          onClick={() => logout({ returnTo: window.location.origin })}
-        >
-          Logga ut
-        </button>
-      )}
     </nav>
   );
 }

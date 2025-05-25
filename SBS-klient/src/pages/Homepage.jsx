@@ -1,16 +1,14 @@
 import React from "react";
 import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import NewsSection from "../components/NewsSection";
 
 export default function Homepage() {
     return (
-        <div className="homepage">
+        <div className="homepage min-h-screen bg-tabyBlue-50">
             <Navbar />
-            <div className="flex flex-col items-center justify-center h-screen">
-                <h1 className="text-4xl font-bold text-center">Välkommen till SB-system</h1>
-                <p className="mt-4 text-lg text-center">
-                    Här kan du hantera dina böcker och sidor.
-                </p>
-            </div>
+            <Hero />
+            <NewsSection />
         </div>
-    )
+    );
 }
