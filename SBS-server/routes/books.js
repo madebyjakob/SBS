@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Book = require('../models/Book');
+const jwtCheck = require('../middlewear/jwtCheck');
+const checkPermissions = require('../middlewear/permissionsCheck');
 
 // Get all books
 router.get('/', async (req, res) => {
@@ -26,21 +28,21 @@ router.get('/:isbn', async (req, res) => {
 });
 
 // Add a new book
-router.post('/', async (req, res) => {
+router.post('/', jwtCheck, checkPermissions, async (req, res) => {
   const { isbn, title, author, instock, loaner, coverImage } = req.body;
-  
+
   // Validate required fields
   if (!isbn || !title || !author) {
     return res.status(400).json({ message: 'ISBN, title, and author are required' });
   }
-  
+
   try {
     // Check if book with ISBN already exists
     const existingBook = await Book.findOne({ isbn });
     if (existingBook) {
       return res.status(409).json({ message: 'A book with this ISBN already exists' });
     }
-    
+
     const newBook = new Book({
       isbn,
       title,
@@ -49,7 +51,7 @@ router.post('/', async (req, res) => {
       loaner: loaner || '',
       coverImage: coverImage || ''
     });
-    
+
     const savedBook = await newBook.save();
     res.status(201).json(savedBook);
   } catch (err) {
@@ -58,16 +60,16 @@ router.post('/', async (req, res) => {
 });
 
 // Bulk add books from spreadsheet
-router.post('/bulk', async (req, res) => {
+router.post('/bulk', jwtCheck, checkPermissions, async (req, res) => {
   const { books: newBooks } = req.body;
-  
+
   if (!Array.isArray(newBooks) || newBooks.length === 0) {
     return res.status(400).json({ message: 'Invalid or empty books array' });
   }
-  
+
   let addedCount = 0;
   let errors = [];
-  
+
   try {
     for (const book of newBooks) {
       // Validate required fields
@@ -75,14 +77,14 @@ router.post('/bulk', async (req, res) => {
         errors.push(`Book with title "${book.title || 'Unknown'}" is missing required fields`);
         continue;
       }
-      
+
       // Check if book already exists
       const existingBook = await Book.findOne({ isbn: book.ISBN });
       if (existingBook) {
         errors.push(`Book with ISBN ${book.ISBN} already exists`);
         continue;
       }
-      
+
       const newBook = new Book({
         isbn: book.ISBN,
         title: book.title,
@@ -91,11 +93,11 @@ router.post('/bulk', async (req, res) => {
         loaner: book.loaner || '',
         coverImage: book.coverImage || ''
       });
-      
+
       await newBook.save();
       addedCount++;
     }
-    
+
     res.json({
       added: addedCount,
       errors: errors.length > 0 ? errors : undefined
@@ -106,23 +108,23 @@ router.post('/bulk', async (req, res) => {
 });
 
 // Update a book
-router.put('/:isbn', async (req, res) => {
+router.put('/:isbn', jwtCheck, checkPermissions, async (req, res) => {
   const { title, author, instock, loaner, coverImage } = req.body;
-  
+
   try {
     const book = await Book.findOne({ isbn: req.params.isbn });
-    
+
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
-    
+
     if (title) book.title = title;
     if (author) book.author = author;
     if (instock !== undefined) book.instock = instock;
     if (loaner !== undefined) book.loaner = loaner;
     if (coverImage) book.coverImage = coverImage;
     book.updatedDate = new Date();
-    
+
     const updatedBook = await book.save();
     res.json(updatedBook);
   } catch (err) {
@@ -131,14 +133,14 @@ router.put('/:isbn', async (req, res) => {
 });
 
 // Delete a book
-router.delete('/:isbn', async (req, res) => {
+router.delete('/:isbn', jwtCheck, checkPermissions, async (req, res) => {
   try {
     const book = await Book.findOne({ isbn: req.params.isbn });
-    
+
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
-    
+
     await Book.deleteOne({ isbn: req.params.isbn });
     res.json(book);
   } catch (err) {

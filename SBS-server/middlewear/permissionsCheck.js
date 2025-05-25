@@ -8,9 +8,9 @@ function checkPermissions(req, res, next) {
     console.log("Auth object in checkAdminRole:", req.auth);
 
     if (!req.auth) {
-        return res.status(401).json({ 
+        return res.status(401).json({
             error: "Authentication required",
-            message: "You must be logged in to access this resource" 
+            message: "You must be logged in to access this resource"
         });
     }
 
@@ -19,7 +19,7 @@ function checkPermissions(req, res, next) {
     console.log("Permissions:", permissions);
 
     //console.log("User roles:", roles);
-    
+
     // Check if the user has the Administrator permission
     if (Array.isArray(req.auth.payload.permissions) && permissions.includes("admin:all")) {
         next();
@@ -31,4 +31,4 @@ function checkPermissions(req, res, next) {
     }
 }
 
-module.exports = checkAdminRole;
+module.exports = checkPermissions;

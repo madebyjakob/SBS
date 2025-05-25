@@ -1,13 +1,11 @@
 import React from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
+import { useAdmin } from '../hooks/useAdmin';
 
 export default function Navbar() {
-  const { isAuthenticated, logout, user } = useAuth0();
-
-  // Check if user is admin - in a real app, this would be verified with backend
-  // or using Auth0 roles/permissions
-  const isAdmin = user && user.email;
+  const { isAuthenticated, logout } = useAuth0();
+  const { isAdmin, isLoading } = useAdmin();
 
   return (
     <nav className="bg-white shadow-md">
@@ -23,7 +21,7 @@ export default function Navbar() {
             <Link to="/mypages" className="text-tabyBlue-600 hover:text-tabyBlue-800 transition-colors">
               Mina sidor
             </Link>
-            {isAdmin && (
+            {!isLoading && isAdmin && (
               <Link to="/admin" className="text-tabyBlue-600 hover:text-tabyBlue-800 transition-colors">
                 Admin
               </Link>

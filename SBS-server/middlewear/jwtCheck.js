@@ -6,10 +6,10 @@ const { auth } = require('express-oauth2-jwt-bearer');
  * This middleware should be applied to all routes that require authentication¨¨
  */
 
-
-
 const jwtCheck = auth({
-  audience: 'klubbsida.onrender.com/api',
-  issuerBaseURL: 'https://dev-nwurgok5vi3aouh3.eu.auth0.com/',
+  audience: 'sbs-5abi.onrender.com/api',
+  issuerBaseURL: 'https://sb-system.eu.auth0.com/',
   tokenSigningAlg: 'RS256'
 });
+
+module.exports = jwtCheck;

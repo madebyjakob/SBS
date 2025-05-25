@@ -10,7 +10,8 @@ createRoot(document.getElementById('root')).render(
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
       authorizationParams={{
-        redirect_uri: "http://localhost:5173/#/Hem"
+        redirect_uri: "http://localhost:5173/#/Hem",
+        audience: 'sbs-5abi.onrender.com/api'
       }}
     >
       <App />
